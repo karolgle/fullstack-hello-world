@@ -27,25 +27,25 @@ class DataServiceTest {
 
     @Test
     void addAssignsIncrementingIds() throws IOException {
-        DataRecord record = new DataRecord(0, "test", 123);
-        DataRecord saved = service.add(record);
+        DataItem record = new DataItem(0, "test", "123");
+        DataItem saved = service.add(record);
         assertEquals(1, saved.getId());
         assertEquals(saved, record);
     }
 
     @Test
     void getAllReturnsCopy() throws IOException {
-        service.add(new DataRecord(0, "a", 1));
-        List<DataRecord> list = service.getAll();
+        service.add(new DataItem(0, "a", "1"));
+        List<DataItem> list = service.getAll();
         list.clear();
         assertEquals(1, service.getAll().size());
     }
 
     @Test
     void updateReturnsUpdatedRecordWhenExists() throws IOException {
-        DataRecord record = service.add(new DataRecord(0, "a", 1));
-        DataRecord updated = new DataRecord(0, "b", 2);
-        Optional<DataRecord> result = service.update(record.getId(), updated);
+        DataItem record = service.add(new DataItem(0, "a", "1"));
+        DataItem updated = new DataItem(0, "b", "2");
+        Optional<DataItem> result = service.update(record.getId(), updated);
         assertTrue(result.isPresent());
         assertEquals("b", result.get().getLabel());
         assertEquals(record.getId(), result.get().getId());
@@ -53,13 +53,13 @@ class DataServiceTest {
 
     @Test
     void updateReturnsEmptyWhenRecordMissing() throws IOException {
-        Optional<DataRecord> result = service.update(42, new DataRecord());
+        Optional<DataItem> result = service.update(42, new DataItem());
         assertTrue(result.isEmpty());
     }
 
     @Test
     void deleteRemovesRecord() throws IOException {
-        DataRecord record = service.add(new DataRecord(0, "a", 1));
+        DataItem record = service.add(new DataItem(0, "a", "1"));
         assertTrue(service.delete(record.getId()));
         assertFalse(service.delete(record.getId()));
     }

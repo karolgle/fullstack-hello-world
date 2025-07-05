@@ -17,7 +17,9 @@ const Table = styled.table`
 
 export default function DataTable() {
   const [rows, setRows] = useState([]);
-  const [form, setForm] = useState({ name: '', value: '' });
+  const [form, setForm] = useState({ label: '', value: '' });
+  const [editingId, setEditingId] = useState(null);
+  const [editData, setEditData] = useState({ label: '', value: '' });
   const [error, setError] = useState(null);
 
   const load = () => {
@@ -36,8 +38,11 @@ export default function DataTable() {
     fetch('/api/data', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ label: form.label, value: Number(form.value) })
-    }).then(load);
+      body: JSON.stringify({ label: form.label, value: form.value })
+    }).then(() => {
+      setForm({ label: '', value: '' });
+      load();
+    });
   };
 
   const updateRow = (id, data) => {
@@ -45,11 +50,17 @@ export default function DataTable() {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
-    }).then(load);
+    }).then(() => {
+      setEditingId(null);
+      load();
+    });
   };
 
   const deleteRow = id => {
-    fetch(`/api/data/${id}`, { method: 'DELETE' }).then(load);
+    fetch(`/api/data/${id}`, { method: 'DELETE' }).then(() => {
+      setEditingId(null);
+      load();
+    });
   };
 
   return (
@@ -65,7 +76,6 @@ export default function DataTable() {
         />
         <input
           placeholder="Value"
-          type="number"
           value={form.value}
           onChange={e => setForm({ ...form, value: e.target.value })}
           required
@@ -74,18 +84,36 @@ export default function DataTable() {
       </form>
       <Table>
         <thead>
-          <tr><th>Label</th><th>Value</th><th>Actions</th></tr>
+          <tr><th>ID</th><th>Label</th><th>Value</th><th>Actions</th></tr>
         </thead>
         <tbody>
           {rows.map(r => (
             <tr key={r.id}>
-              <td>
-                <input defaultValue={r.label} onBlur={e => updateRow(r.id, { ...r, label: e.target.value })} />
-              </td>
-              <td>
-                <input type="number" defaultValue={r.value} onBlur={e => updateRow(r.id, { ...r, value: Number(e.target.value) })} />
-              </td>
-              <td><button onClick={() => deleteRow(r.id)}>Delete</button></td>
+              {editingId === r.id ? (
+                <>
+                  <td>{r.id}</td>
+                  <td>
+                    <input value={editData.label} onChange={e => setEditData({ ...editData, label: e.target.value })} />
+                  </td>
+                  <td>
+                    <input value={editData.value} onChange={e => setEditData({ ...editData, value: e.target.value })} />
+                  </td>
+                  <td>
+                    <button onClick={() => updateRow(r.id, editData)}>Save</button>
+                    <button onClick={() => deleteRow(r.id)}>Delete</button>
+                  </td>
+                </>
+              ) : (
+                <>
+                  <td>{r.id}</td>
+                  <td>{r.label}</td>
+                  <td>{r.value}</td>
+                  <td>
+                    <button onClick={() => { setEditingId(r.id); setEditData({ label: r.label, value: r.value }); }}>Edit</button>
+                    <button onClick={() => deleteRow(r.id)}>Delete</button>
+                  </td>
+                </>
+              )}
             </tr>
           ))}
         </tbody>

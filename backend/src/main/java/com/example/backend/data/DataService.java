@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +20,7 @@ import java.util.Optional;
 public class DataService {
     private final ObjectMapper mapper;
     private final Path dataFile;
-    private final List<DataRecord> records = new ArrayList<>();
+    private final List<DataItem> records = new ArrayList<>();
     private final java.util.concurrent.atomic.AtomicInteger lastId = new java.util.concurrent.atomic.AtomicInteger();
 
     @org.springframework.beans.factory.annotation.Autowired
@@ -36,15 +37,15 @@ public class DataService {
     @PostConstruct
     public void init() throws IOException {
         load();
-        int maxId = records.stream().mapToInt(DataRecord::getId).max().orElse(0);
+        int maxId = records.stream().mapToInt(DataItem::getId).max().orElse(0);
         lastId.set(maxId);
     }
 
-    public synchronized List<DataRecord> getAll() {
+    public synchronized List<DataItem> getAll() {
         return new ArrayList<>(records);
     }
 
-    public synchronized DataRecord add(DataRecord record) throws IOException {
+    public synchronized DataItem add(DataItem record) throws IOException {
         int newId = lastId.incrementAndGet();
         record.setId(newId);
         records.add(record);
@@ -52,7 +53,7 @@ public class DataService {
         return record;
     }
 
-    public synchronized Optional<DataRecord> update(int id, DataRecord record) throws IOException {
+    public synchronized Optional<DataItem> update(int id, DataItem record) throws IOException {
         for (int i = 0; i < records.size(); i++) {
             if (records.get(i).getId() == id) {
                 record.setId(id);
@@ -76,7 +77,7 @@ public class DataService {
         if (Files.exists(dataFile)) {
             try (InputStream in = Files.newInputStream(dataFile)) {
                 records.clear();
-                records.addAll(mapper.readValue(in, new TypeReference<List<DataRecord>>() {}));
+                records.addAll(mapper.readValue(in, new TypeReference<List<DataItem>>() {}));
             }
         }
     }

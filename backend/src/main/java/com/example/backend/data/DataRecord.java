@@ -37,4 +37,26 @@ public class DataRecord {
     public void setValue(int value) {
         this.value = value;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DataRecord that = (DataRecord) o;
+        return id == that.id && value == that.value && java.util.Objects.equals(label, that.label);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(id, label, value);
+    }
+
+    @Override
+    public String toString() {
+        return "DataRecord{" +
+                "id=" + id +
+                ", label='" + label + '\'' +
+                ", value=" + value +
+                '}';
+    }
 }

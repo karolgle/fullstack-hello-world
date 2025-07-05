@@ -2,6 +2,7 @@ package com.example.backend.data;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
@@ -16,14 +17,24 @@ import java.util.Optional;
 
 @Service
 public class DataService {
-    private final ObjectMapper mapper = new ObjectMapper();
-    private List<DataRecord> records = new ArrayList<>();
-    private Path dataFile;
+    private final ObjectMapper mapper;
+    private final Path dataFile;
+    private final List<DataRecord> records = new ArrayList<>();
     private final java.util.concurrent.atomic.AtomicInteger lastId = new java.util.concurrent.atomic.AtomicInteger();
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public DataService(@Value("${data.file.path:src/main/resources/data.json}") String dataFilePath, ObjectMapper mapper) {
+        this.mapper = mapper;
+        this.dataFile = Path.of(dataFilePath);
+    }
+
+    DataService(Path dataFile, ObjectMapper mapper) {
+        this.mapper = mapper;
+        this.dataFile = dataFile;
+    }
 
     @PostConstruct
     public void init() throws IOException {
-        dataFile = Path.of("src/main/resources/data.json");
         load();
         int maxId = records.stream().mapToInt(DataRecord::getId).max().orElse(0);
         lastId.set(maxId);
@@ -64,7 +75,8 @@ public class DataService {
     private void load() throws IOException {
         if (Files.exists(dataFile)) {
             try (InputStream in = Files.newInputStream(dataFile)) {
-                records = mapper.readValue(in, new TypeReference<List<DataRecord>>() {});
+                records.clear();
+                records.addAll(mapper.readValue(in, new TypeReference<List<DataRecord>>() {}));
             }
         }
     }

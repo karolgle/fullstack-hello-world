@@ -1,21 +1,17 @@
-import { useEffect, useState } from 'react'
-import './App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Header from './components/Header.jsx';
+import Home from './components/Home.jsx';
+import DataTable from './components/DataTable.jsx';
+import './App.css';
 
-function App() {
-  const [message, setMessage] = useState('Loading...')
-
-  useEffect(() => {
-    fetch('/api/hello')
-      .then(res => res.json())
-      .then(data => setMessage(data.message))
-      .catch(() => setMessage('Error fetching message'))
-  }, [])
-
+export default function App() {
   return (
-    <div className="App">
-      <h1>{message}</h1>
-    </div>
-  )
+    <BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/data" element={<DataTable />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
-
-export default App

@@ -13,7 +13,7 @@ const Table = styled.table`
 
 export default function DataTable() {
   const [rows, setRows] = useState([]);
-  const [form, setForm] = useState({ name: '', value: '' });
+  const [form, setForm] = useState({ label: '', value: '' });
   const [error, setError] = useState(null);
 
   const load = () => {
@@ -32,7 +32,7 @@ export default function DataTable() {
     fetch('/api/data', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: form.name, value: Number(form.value) })
+      body: JSON.stringify({ label: form.label, value: Number(form.value) })
     }).then(load);
   };
 
@@ -54,9 +54,9 @@ export default function DataTable() {
       {error && <p>{error}</p>}
       <form onSubmit={addRow} style={{ marginBottom: '1rem' }}>
         <input
-          placeholder="Name"
-          value={form.name}
-          onChange={e => setForm({ ...form, name: e.target.value })}
+          placeholder="Label"
+          value={form.label}
+          onChange={e => setForm({ ...form, label: e.target.value })}
           required
         />
         <input
@@ -70,14 +70,13 @@ export default function DataTable() {
       </form>
       <Table>
         <thead>
-          <tr><th>ID</th><th>Name</th><th>Value</th><th>Actions</th></tr>
+          <tr><th>Label</th><th>Value</th><th>Actions</th></tr>
         </thead>
         <tbody>
           {rows.map(r => (
             <tr key={r.id}>
-              <td>{r.id}</td>
               <td>
-                <input defaultValue={r.name} onBlur={e => updateRow(r.id, { ...r, name: e.target.value })} />
+                <input defaultValue={r.label} onBlur={e => updateRow(r.id, { ...r, label: e.target.value })} />
               </td>
               <td>
                 <input type="number" defaultValue={r.value} onBlur={e => updateRow(r.id, { ...r, value: Number(e.target.value) })} />

@@ -19,11 +19,14 @@ public class DataService {
     private final ObjectMapper mapper = new ObjectMapper();
     private List<DataRecord> records = new ArrayList<>();
     private Path dataFile;
+    private final java.util.concurrent.atomic.AtomicInteger lastId = new java.util.concurrent.atomic.AtomicInteger();
 
     @PostConstruct
     public void init() throws IOException {
         dataFile = Path.of("src/main/resources/data.json");
         load();
+        int maxId = records.stream().mapToInt(DataRecord::getId).max().orElse(0);
+        lastId.set(maxId);
     }
 
     public synchronized List<DataRecord> getAll() {
@@ -31,7 +34,7 @@ public class DataService {
     }
 
     public synchronized DataRecord add(DataRecord record) throws IOException {
-        int newId = records.stream().mapToInt(DataRecord::getId).max().orElse(0) + 1;
+        int newId = lastId.incrementAndGet();
         record.setId(newId);
         records.add(record);
         save();

@@ -2,15 +2,15 @@ package com.example.backend.data;
 
 public class DataRecord {
     private int id;
-    private String name;
+    private String label;
     private int value;
 
     public DataRecord() {
     }
 
-    public DataRecord(int id, String name, int value) {
+    public DataRecord(int id, String label, int value) {
         this.id = id;
-        this.name = name;
+        this.label = label;
         this.value = value;
     }
 
@@ -22,12 +22,12 @@ public class DataRecord {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getLabel() {
+        return label;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public int getValue() {

@@ -3,29 +3,12 @@ import styled from 'styled-components';
 
 const Wrapper = styled.div`
   padding: 2rem;
-  display: grid;
-  gap: 1rem;
-`;
-
-const FormRow = styled.form`
-  display: grid;
-  grid-template-columns: 2fr 1fr auto;
-  gap: 0.5rem;
 `;
 
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-  th {
-    background: #4caf50;
-    color: white;
-  }
-  td,
-  th {
-    border: 1px solid #ccc;
-    padding: 0.75rem;
-    text-align: left;
-  }
+  td, th { border: 1px solid #ccc; padding: 0.5rem; }
 `;
 
 export default function DataTable() {
@@ -49,14 +32,8 @@ export default function DataTable() {
     fetch('/api/data', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: form.name, value: Number(form.value) })
-    })
-      .then(res => res.json())
-      .then(record => {
-        setRows(prev => [...prev, record]);
-        setForm({ name: '', value: '' });
-      })
-      .catch(() => setError('Failed to add record'));
+      body: JSON.stringify({ label: form.label, value: Number(form.value) })
+    }).then(load);
   };
 
   const updateRow = (id, data) => {
@@ -75,11 +52,11 @@ export default function DataTable() {
     <Wrapper>
       <h1>Data Table</h1>
       {error && <p>{error}</p>}
-      <FormRow onSubmit={addRow}>
+      <form onSubmit={addRow} style={{ marginBottom: '1rem' }}>
         <input
-          placeholder="Name"
-          value={form.name}
-          onChange={e => setForm({ ...form, name: e.target.value })}
+          placeholder="Label"
+          value={form.label}
+          onChange={e => setForm({ ...form, label: e.target.value })}
           required
         />
         <input
@@ -90,17 +67,16 @@ export default function DataTable() {
           required
         />
         <button type="submit">Add</button>
-      </FormRow>
+      </form>
       <Table>
         <thead>
-          <tr><th>ID</th><th>Name</th><th>Value</th><th>Actions</th></tr>
+          <tr><th>Label</th><th>Value</th><th>Actions</th></tr>
         </thead>
         <tbody>
           {rows.map(r => (
             <tr key={r.id}>
-              <td>{r.id}</td>
               <td>
-                <input defaultValue={r.name} onBlur={e => updateRow(r.id, { ...r, name: e.target.value })} />
+                <input defaultValue={r.label} onBlur={e => updateRow(r.id, { ...r, label: e.target.value })} />
               </td>
               <td>
                 <input type="number" defaultValue={r.value} onBlur={e => updateRow(r.id, { ...r, value: Number(e.target.value) })} />

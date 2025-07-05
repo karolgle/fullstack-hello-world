@@ -1,19 +1,16 @@
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: calc(100vh - 60px);
-  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-  color: #fff;
+  display: grid;
+  place-items: center;
+  gap: 1rem;
   text-align: center;
+  padding: 2rem;
 `;
 
 const Button = styled.button`
-  background: #fff;
-  color: #333;
+  background: ${props => props.theme.primary};
+  color: #fff;
   border: none;
   padding: 0.8rem 1.5rem;
   font-size: 1rem;

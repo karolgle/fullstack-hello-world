@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
+  display: grid;
+  place-items: center;
+  gap: 1rem;
   padding: 2rem;
 `;
 
 const Table = styled.table`
   width: 100%;
+  max-width: 600px;
   border-collapse: collapse;
   td, th { border: 1px solid #ccc; padding: 0.5rem; }
 `;

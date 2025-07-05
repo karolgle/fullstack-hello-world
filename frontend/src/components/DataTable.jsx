@@ -3,12 +3,29 @@ import styled from 'styled-components';
 
 const Wrapper = styled.div`
   padding: 2rem;
+  display: grid;
+  gap: 1rem;
+`;
+
+const FormRow = styled.form`
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  gap: 0.5rem;
 `;
 
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-  td, th { border: 1px solid #ccc; padding: 0.5rem; }
+  th {
+    background: #4caf50;
+    color: white;
+  }
+  td,
+  th {
+    border: 1px solid #ccc;
+    padding: 0.75rem;
+    text-align: left;
+  }
 `;
 
 export default function DataTable() {
@@ -33,7 +50,13 @@ export default function DataTable() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: form.name, value: Number(form.value) })
-    }).then(load);
+    })
+      .then(res => res.json())
+      .then(record => {
+        setRows(prev => [...prev, record]);
+        setForm({ name: '', value: '' });
+      })
+      .catch(() => setError('Failed to add record'));
   };
 
   const updateRow = (id, data) => {
@@ -52,7 +75,7 @@ export default function DataTable() {
     <Wrapper>
       <h1>Data Table</h1>
       {error && <p>{error}</p>}
-      <form onSubmit={addRow} style={{ marginBottom: '1rem' }}>
+      <FormRow onSubmit={addRow}>
         <input
           placeholder="Name"
           value={form.name}
@@ -67,7 +90,7 @@ export default function DataTable() {
           required
         />
         <button type="submit">Add</button>
-      </form>
+      </FormRow>
       <Table>
         <thead>
           <tr><th>ID</th><th>Name</th><th>Value</th><th>Actions</th></tr>

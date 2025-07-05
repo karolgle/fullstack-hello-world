@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/data")
-// The React frontend runs via Vite on port 5173 during development
 @CrossOrigin(origins = "http://localhost:5173")
 public class DataController {
     private final DataService service;

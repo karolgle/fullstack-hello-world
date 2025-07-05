@@ -1,14 +1,14 @@
 package com.example.backend.data;
 
-public class DataRecord {
+public class DataItem {
     private int id;
     private String label;
-    private int value;
+    private String value;
 
-    public DataRecord() {
+    public DataItem() {
     }
 
-    public DataRecord(int id, String label, int value) {
+    public DataItem(int id, String label, String value) {
         this.id = id;
         this.label = label;
         this.value = value;
@@ -30,11 +30,11 @@ public class DataRecord {
         this.label = label;
     }
 
-    public int getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(String value) {
         this.value = value;
     }
 
@@ -42,8 +42,8 @@ public class DataRecord {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DataRecord that = (DataRecord) o;
-        return id == that.id && value == that.value && java.util.Objects.equals(label, that.label);
+        DataItem that = (DataItem) o;
+        return id == that.id && java.util.Objects.equals(label, that.label) && java.util.Objects.equals(value, that.value);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class DataRecord {
 
     @Override
     public String toString() {
-        return "DataRecord{" +
+        return "DataItem{" +
                 "id=" + id +
                 ", label='" + label + '\'' +
                 ", value=" + value +

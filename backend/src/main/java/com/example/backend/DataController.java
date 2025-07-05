@@ -1,6 +1,6 @@
 package com.example.backend;
 
-import com.example.backend.data.DataRecord;
+import com.example.backend.data.DataItem;
 import com.example.backend.data.DataService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,17 +19,17 @@ public class DataController {
     }
 
     @GetMapping
-    public List<DataRecord> all() {
+    public List<DataItem> all() {
         return service.getAll();
     }
 
     @PostMapping
-    public ResponseEntity<DataRecord> add(@RequestBody DataRecord record) throws IOException {
+    public ResponseEntity<DataItem> add(@RequestBody DataItem record) throws IOException {
         return ResponseEntity.ok(service.add(record));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DataRecord> update(@PathVariable int id, @RequestBody DataRecord record) throws IOException {
+    public ResponseEntity<DataItem> update(@PathVariable int id, @RequestBody DataItem record) throws IOException {
         return service.update(id, record)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
